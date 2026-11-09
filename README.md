@@ -1,12 +1,20 @@
+<div align="center">
+
 # 🛡️ HellBox Sentinel
 
-![Bash](https://img.shields.io/badge/Bash-5.x-4EAA25?logo=gnubash&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-Server-FCC624?logo=linux&logoColor=black) ![License](https://img.shields.io/badge/License-MIT-blue)
+**A lightweight Bash health monitor for Linux servers, with self-healing.**
 
-A lightweight, Bash-based Linux server health monitor with self-healing. It watches disk and RAM usage, checks critical services such as Nginx or Docker, restarts them if they crash, and keeps an audit log of every scan.
+![Bash](https://img.shields.io/badge/Bash-5.x-4EAA25?logo=gnubash&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-Server-FCC624?logo=linux&logoColor=black) ![systemd](https://img.shields.io/badge/systemd-ready-orange) ![License](https://img.shields.io/badge/License-MIT-blue)
 
-Built for DevOps engineers and sysadmins who want simple, dependency-free monitoring that runs from cron or from an interactive menu.
+</div>
 
-## 🚀 Features
+HellBox Sentinel watches disk and RAM usage, checks critical services such as Nginx or Docker, restarts them if they crash, and keeps an audit log of every scan. It is built for DevOps engineers and sysadmins who want simple, dependency-free monitoring that runs from cron or from an interactive menu.
+
+## 📌 Table of Contents
+
+[🎯 What it does](#-what-it-does) · [🧠 Architecture](#-architecture--at-a-glance) · [🛠️ Tech stack](#️-tech-stack) · [📂 Versions](#-versions) · [🚀 Getting started](#-getting-started) · [🗂️ Project status](#️-project-status) · [🧭 Design principles](#-design-principles)
+
+## 🎯 What it does
 
 | Feature | What it does |
 |---|---|
@@ -16,6 +24,27 @@ Built for DevOps engineers and sysadmins who want simple, dependency-free monito
 | Three modes | Cron-ready script, flag-driven CLI tool, and an interactive menu |
 | No dependencies | Pure Bash, works on systemd-based Linux distributions |
 
+## 🧠 Architecture: at a glance
+
+```
+cron / CLI / menu  ->  sentinel script  ->  checks (disk, RAM, service)
+                                              |
+                              healthy  <------+------>  failing
+                                |                          |
+                            log result            restart service + log
+```
+
+The same checks power all three versions. Only the way you start them changes: a cron job (v1), flags on the command line (v2) or a menu (v3).
+
+## 🛠️ Tech stack
+
+| Layer | Technology |
+|---|---|
+| Language | Bash |
+| Service management | systemd (`systemctl`) |
+| Scheduling | cron |
+| Output | Plain-text audit log |
+
 ## 📂 Versions
 
 | Version | Script | Best for |
@@ -24,7 +53,7 @@ Built for DevOps engineers and sysadmins who want simple, dependency-free monito
 | v2 - The CLI Tool | `sentinel_v2_cli.sh` | Scripting. Flags: `-s` service name, `-t` disk threshold % |
 | v3 - The Interactive Suite | `sentinel_v3_menu.sh` | Manual checks through a menu (options 1-5) |
 
-## 🛠️ Installation
+## 🚀 Getting started
 
 ```bash
 git clone https://github.com/TorikulIslamHira/hellbox-sentinel.git
@@ -32,7 +61,7 @@ cd hellbox-sentinel
 chmod +x *.sh
 ```
 
-## ▶️ Usage
+Run it:
 
 ```bash
 # v1: basic automatic check
@@ -45,21 +74,31 @@ chmod +x *.sh
 ./sentinel_v3_menu.sh
 ```
 
-### Run automatically with cron
+Run automatically with cron, every 5 minutes:
 
 ```bash
-# every 5 minutes
 */5 * * * * /path/to/hellbox-sentinel/sentinel_v1_basic.sh
 ```
 
-## 🗺️ Roadmap
+## 🗂️ Project status
 
-| Planned | Status |
+| Item | Status |
 |---|---|
-| Telegram / Discord alerts | Planned |
-| Docker container health checks | Planned |
-| Install script with a systemd unit | Planned |
-| Multi-server status overview | Planned |
+| Disk and RAM checks | ✅ Done |
+| Service auto-healing | ✅ Done |
+| CLI flags and interactive menu | ✅ Done |
+| Telegram / Discord alerts | ⏳ Planned |
+| Docker container health checks | ⏳ Planned |
+| Install script with a systemd unit | ⏳ Planned |
+| Multi-server status overview | ⏳ Planned |
+
+## 🧭 Design principles
+
+| Principle | Meaning |
+|---|---|
+| Zero dependencies | Plain Bash, nothing to install on the server |
+| Self-healing first | Fix the common failure (a crashed service) before alerting a human |
+| Auditable | Every scan leaves a log line you can read later |
 
 ## 🔗 Related
 
